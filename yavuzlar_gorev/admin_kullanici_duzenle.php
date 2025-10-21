@@ -2,7 +2,6 @@
     require 'config.php';
     require 'check_role.php';
 
-    //--- BÖLÜM 1: MANTIKSAL İŞLEMLER (HTML ÇIKTISI YOK) ---
     check_role(['admin']);
 
     if (!isset($_GET['id']) || empty($_GET['id'])) {
@@ -11,7 +10,6 @@
     }
     $userId = $_GET['id'];
 
-    // FORM GÖNDERİLDİYSE GÜNCELLEME İŞLEMİNİ YAP
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fullName = trim($_POST['full_name']);
         $email = trim($_POST['email']);
@@ -42,12 +40,10 @@
                 $_SESSION['flash_message'] = "HATA: " . $e->getMessage();
             }
         }
-        // Hata durumunda aynı sayfaya geri yönlendir
         header("Location: admin_kullanici_duzenle.php?id=" . $userId);
         exit();
     }
 
-    // SAYFAYI GÖRÜNTÜLEMEK İÇİN GEREKLİ VERİLERİ ÇEK
     $user = $db->prepare("SELECT * FROM User WHERE id = :id AND role = 'firma_admin'");
     $user->execute([':id' => $userId]);
     $user = $user->fetch();
@@ -64,7 +60,6 @@
         unset($_SESSION['flash_message']);
     }
 
-    //--- BÖLÜM 2: GÖRSEL OLUŞTURMA (ARTIK HTML BAŞLAYABİLİR) ---
     require 'header.php';
 ?>
 
@@ -105,4 +100,5 @@
 
 <?php
     require 'footer.php';
+
 ?>
