@@ -2,7 +2,6 @@
     require 'config.php';
     require 'check_role.php';
 
-    //--- BÖLUM 1: MANTIKSAL İŞLEMLER (HTML'den Önce) ---
     check_role(['firma_admin']);
     $company_id = $_SESSION['user_company_id'];
 
@@ -10,7 +9,6 @@
         die("HATA: Bir firmaya atanmamışsınız.");
     }
 
-    // YENİ SEFER EKLEME
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_trip'])) {
         try {
             $id = uniqid('T');
@@ -33,7 +31,6 @@
         exit();
     }
 
-    // SEFER SİLME
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_trip'])) {
         $trip_id = $_POST['trip_id'];
         try {
@@ -47,7 +44,6 @@
         exit();
     }
 
-    // SAYFAYI GÖSTERMEK İÇİN VERİLERİ HAZIRLA
     $message = '';
     if (isset($_SESSION['flash_message'])) {
         $message = $_SESSION['flash_message'];
@@ -57,7 +53,6 @@
     $stmt->execute([':cid' => $company_id]);
     $trips = $stmt->fetchAll();
 
-    //--- BÖLÜM 2: GÖRSEL OLUŞTURMA (HTML Başlangıcı) ---
     require 'header.php';
 ?>
 
@@ -117,4 +112,5 @@
 
 <?php
     require 'footer.php';
+
 ?>
