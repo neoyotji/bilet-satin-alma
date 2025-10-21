@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./data:/data
+    environment:
+      - DATABASE_PATH=/data/bilet.db
