@@ -2,7 +2,6 @@
     require 'config.php';
     require 'check_role.php';
 
-    //--- BÖLÜM 1: MANTIKSAL İŞLEMLER (HTML'den Önce) ---
     check_role(['firma_admin']);
     $company_id = $_SESSION['user_company_id'];
 
@@ -10,7 +9,6 @@
         die("HATA: Bir firmaya atanmamışsınız.");
     }
 
-    // YENİ KUPON EKLEME
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_coupon'])) {
         $code = strtoupper(trim($_POST['code']));
         $discount = trim($_POST['discount']);
@@ -24,7 +22,6 @@
                 $stmt->execute([':id' => $id, ':code' => $code, ':discount' => $discount, ':ul' => $usage_limit, ':ed' => $expire_date, ':cid' => $company_id]);
                 $_SESSION['flash_message'] = "Firmaya özel kupon eklendi.";
             } catch (PDOException $e) {
-                // DÜZELTME: Benzersiz kod hatasını kontrol et
                 if ($e->errorInfo[1] == 19) {
                     $_SESSION['flash_message'] = "HATA: Bu kupon kodu zaten mevcut. Lütfen farklı bir kod girin.";
                 } else {
@@ -38,7 +35,6 @@
         exit();
     }
 
-    // KUPON SİLME
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_coupon'])) {
         $coupon_id = $_POST['coupon_id'];
         try {
@@ -52,7 +48,6 @@
         exit();
     }
 
-    // SAYFAYI GÖRÜNTÜLEMEK İÇİN VERİLERİ HAZIRLA
     $message = '';
     if (isset($_SESSION['flash_message'])) {
         $message = $_SESSION['flash_message'];
@@ -62,7 +57,6 @@
     $stmt->execute([':cid' => $company_id]);
     $coupons = $stmt->fetchAll();
 
-    //--- BÖLÜM 2: GÖRSEL OLUŞTURMA (HTML Başlangıcı) ---
     require 'header.php';
 ?>
 
@@ -126,4 +120,5 @@
 
 <?php
     require 'footer.php';
+
 ?>
