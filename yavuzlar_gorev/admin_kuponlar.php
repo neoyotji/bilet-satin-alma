@@ -44,6 +44,7 @@
         $message = $_SESSION['flash_message'];
         unset($_SESSION['flash_message']);
     }
+//sql inj var mı bak
     $coupons = $db->query("SELECT * FROM Coupons WHERE company_id IS NULL ORDER BY created_at DESC")->fetchAll();
 
     require 'header.php';
@@ -113,3 +114,4 @@
     require 'footer.php';
 
 ?>
+
