@@ -1,25 +1,20 @@
 <?php
 require 'config.php';
-require 'header.php'; // Sayfanın üst kısmını ve menüyü getirir
+require 'header.php';
 
-// Flash mesajları yönetimi (tüm kullanıcılar için ortak)
 $message = '';
 if (isset($_SESSION['flash_message'])) {
     $message = $_SESSION['flash_message'];
     unset($_SESSION['flash_message']);
 }
 
-// Değişkenleri başlangıçta tanımla
 $my_active_tickets = [];
 $searched_trips = [];
 $departureCity = $_GET['departure_city'] ?? '';
 $destinationCity = $_GET['destination_city'] ?? '';
 
-// === KULLANICI GİRİŞİ KONTROLÜ ===
 if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'user') {
-    // --- GİRİŞ YAPMIŞ KULLANICI (YOLCU) ---
 
-    // 1. Kullanıcının aktif biletlerini çek
     $stmt_my_tickets = $db->prepare(
         "SELECT 
             Tickets.id, Tickets.status,
@@ -38,8 +33,6 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'user') {
     $my_active_tickets = $stmt_my_tickets->fetchAll();
 }
 
-// --- TÜM KULLANICILAR (Ziyaretçi ve Yolcu) İÇİN SEFER ARAMA ---
-// Form gönderildiyse tüm seferleri filtrele
 if (!empty($departureCity) && !empty($destinationCity)) {
     $stmt_search = $db->prepare(
         "SELECT Trips.*, Bus_Company.name as company_name 
@@ -105,7 +98,7 @@ if (!empty($departureCity) && !empty($destinationCity)) {
         </form>
     </div>
 
-    <?php if (!empty($departureCity)): // Sadece arama yapıldıysa sonuçları göster ?>
+    <?php if (!empty($departureCity)):  ?>
         <h2 style="margin-top: 2rem;">Arama Sonuçları</h2>
         <?php if (empty($searched_trips)): ?>
             <p>Aradığınız kriterlere uygun sefer bulunamadı.</p>
@@ -139,5 +132,6 @@ if (!empty($departureCity) && !empty($destinationCity)) {
 </div>
 
 <?php
-require 'footer.php'; // Sayfanın altını ve kapanış etiketlerini getirir
+require 'footer.php'; 
+
 ?>
