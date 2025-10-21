@@ -2,17 +2,14 @@
     require 'config.php';
     require 'check_role.php';
 
-    //--- BÖLÜM 1: MANTIKSAL İŞLEMLER ---
     check_role(['admin']);
 
-    // URL'den gelen ID'yi al ve doğrula
     if (!isset($_GET['id']) || empty($_GET['id'])) {
         header("Location: admin_firmalar.php");
         exit();
     }
     $companyId = $_GET['id'];
 
-    // FORM GÖNDERİLDİYSE GÜNCELLEME YAP
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $companyName = trim($_POST['company_name']);
 
@@ -25,14 +22,12 @@
                 exit();
             } catch (PDOException $e) {
                 $_SESSION['flash_message'] = "HATA: " . $e->getMessage();
-                // Hata durumunda aynı sayfaya geri yönlendir
                 header("Location: admin_firma_duzenle.php?id=" . $companyId);
                 exit();
             }
         }
     }
 
-    // SAYFAYI GÖRÜNTÜLEMEK İÇİN VERİLERİ ÇEK
     try {
         $stmt = $db->prepare("SELECT * FROM Bus_Company WHERE id = :id");
         $stmt->bindParam(':id', $companyId);
@@ -48,14 +43,12 @@
         die("Veritabanı hatası: " . $e->getMessage());
     }
 
-    // Varsa, flash mesajı al
     $message = '';
     if (isset($_SESSION['flash_message'])) {
         $message = $_SESSION['flash_message'];
         unset($_SESSION['flash_message']);
     }
 
-    //--- BÖLÜM 2: GÖRSEL OLUŞTURMA ---
     require 'header.php';
 ?>
 
@@ -81,4 +74,5 @@
 
 <?php
     require 'footer.php';
+
 ?>
