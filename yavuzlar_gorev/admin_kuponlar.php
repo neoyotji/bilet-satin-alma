@@ -2,10 +2,8 @@
     require 'config.php';
     require 'check_role.php';
 
-    //--- BÖLÜM 1: MANTIKSAL İŞLEMLER (YÖNLENDİRME VB.) ---
     check_role(['admin']);
 
-    // YENİ KUPON EKLEME
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_coupon'])) {
         $code = strtoupper(trim($_POST['code']));
         $discount = trim($_POST['discount']);
@@ -28,7 +26,6 @@
         exit();
     }
 
-    // KUPON SİLME
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_coupon'])) {
         $couponId = $_POST['coupon_id'];
         try {
@@ -42,7 +39,6 @@
         exit();
     }
 
-    // GÖRSEL BÖLÜM İÇİN VERİLERİ VE MESAJLARI HAZIRLA
     $message = '';
     if (isset($_SESSION['flash_message'])) {
         $message = $_SESSION['flash_message'];
@@ -50,7 +46,6 @@
     }
     $coupons = $db->query("SELECT * FROM Coupons WHERE company_id IS NULL ORDER BY created_at DESC")->fetchAll();
 
-    //--- BÖLÜM 2: GÖRSEL OLUŞTURMA (HTML BAŞLANGICI) ---
     require 'header.php';
 ?>
 
@@ -116,4 +111,5 @@
 
 <?php
     require 'footer.php';
+
 ?>
