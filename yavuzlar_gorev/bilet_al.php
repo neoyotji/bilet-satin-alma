@@ -2,7 +2,6 @@
 require 'config.php';
 require 'check_role.php';
 
-//--- BÖLÜM 1: MANTIKSAL İŞLEMLER (HTML ÇIKTISI YOK) ---
 check_role(['user']);
 
 if (!isset($_GET['trip_id']) || empty($_GET['trip_id'])) {
@@ -11,7 +10,6 @@ if (!isset($_GET['trip_id']) || empty($_GET['trip_id'])) {
 }
 $trip_id = $_GET['trip_id'];
 
-// FORM GÖNDERİLDİYSE BİLET ALMA İŞLEMİNİ YAP
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $selected_seats = isset($_POST['seats']) ? $_POST['seats'] : [];
     $coupon_code = strtoupper(trim($_POST['coupon_code']));
@@ -21,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $db->beginTransaction(); 
         try {
-            // Sefer fiyatını yeniden çekmek güvenlik açısından daha iyidir.
             $stmt_price = $db->prepare("SELECT price, company_id FROM Trips WHERE id = :trip_id");
             $stmt_price->execute([':trip_id' => $trip_id]);
             $trip_data = $stmt_price->fetch();
@@ -73,12 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['flash_message'] = "HATA: " . $e->getMessage();
         }
     }
-    // Hata durumunda veya koltuk seçilmediyse aynı sayfaya geri yönlendir
     header("Location: bilet_al.php?trip_id=" . $trip_id);
     exit();
 }
 
-// SAYFAYI GÖRÜNTÜLEMEK İÇİN GEREKLİ VERİLERİ ÇEK
 $stmt_trip_details = $db->prepare("SELECT Trips.*, Bus_Company.name AS company_name FROM Trips JOIN Bus_Company ON Trips.company_id = Bus_Company.id WHERE Trips.id = :trip_id");
 $stmt_trip_details->execute([':trip_id' => $trip_id]);
 $trip = $stmt_trip_details->fetch();
@@ -97,7 +92,6 @@ if (isset($_SESSION['flash_message'])) {
     unset($_SESSION['flash_message']);
 }
 
-//--- BÖLÜM 2: GÖRSEL OLUŞTURMA (HTML Başlangıcı) ---
 require 'header.php';
 ?>
 
@@ -128,7 +122,7 @@ require 'header.php';
             <?php for ($i = 1; $i <= $trip['capacity']; $i++): ?>
                 <?php
                 if ($i > 1 && $i % 2 != 0 && ($i - 1) % 4 == 0) {
-                    echo '<div class="seat-label"></div>'; // Koridor
+                    echo '<div class="seat-label"></div>'; 
                 }
                 $is_booked = in_array($i, $booked_seats_raw);
                 ?>
@@ -150,4 +144,5 @@ require 'header.php';
 
 <?php
 require 'footer.php';
+
 ?>
