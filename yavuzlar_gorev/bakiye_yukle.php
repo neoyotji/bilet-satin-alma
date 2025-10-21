@@ -1,15 +1,11 @@
 <?php
 require 'config.php';
 require 'check_role.php';
-
-// Sadece 'user' rolündeki kullanıcılar erişebilir
 check_role(['user']);
 
-// FORM GÖNDERİLDİYSE BAKİYEYİ GÜNCELLE
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_balance'])) {
     $amount_to_add = $_POST['amount'];
 
-    // Gelen verinin pozitif bir sayı olduğunu doğrula
     if (is_numeric($amount_to_add) && $amount_to_add > 0) {
         try {
             $stmt = $db->prepare("UPDATE User SET balance = balance + :amount WHERE id = :user_id");
@@ -18,11 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_balance'])) {
                 ':user_id' => $_SESSION['user_id']
             ]);
             $_SESSION['flash_message'] = htmlspecialchars($amount_to_add) . " TL başarıyla hesabınıza eklendi.";
-            header("Location: biletlerim.php"); // Kullanıcıyı güncel bakiyesini göreceği sayfaya yönlendir
+            header("Location: biletlerim.php"); 
             exit();
         } catch (PDOException $e) {
             $_SESSION['flash_message'] = "HATA: Bakiye güncellenirken bir sorun oluştu.";
-            // Hata durumunda aynı sayfada kal
             header("Location: bakiye_yukle.php");
             exit();
         }
@@ -33,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_balance'])) {
     }
 }
 
-// Flash mesajları yönetimi
 $message = '';
 if (isset($_SESSION['flash_message'])) {
     $message = $_SESSION['flash_message'];
@@ -65,4 +59,5 @@ require 'header.php';
 
 <?php
 require 'footer.php';
+
 ?>
