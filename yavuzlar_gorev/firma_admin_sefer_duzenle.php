@@ -2,7 +2,6 @@
     require 'config.php';
     require 'check_role.php';
 
-    //--- BÖLÜM 1: MANTIKSAL İŞLEMLER (HTML ÇIKTISI YOK) ---
     check_role(['firma_admin']);
     $company_id = $_SESSION['user_company_id'];
 
@@ -13,7 +12,6 @@
     }
     $trip_id = $_GET['id'];
 
-    // FORM GÖNDERİLDİYSE GÜNCELLEME YAP
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         try {
             $stmt = $db->prepare(
@@ -31,13 +29,11 @@
             exit();
         } catch (PDOException $e) {
             $_SESSION['flash_message'] = "HATA: Güncelleme başarısız. " . $e->getMessage();
-            // Hata durumunda aynı sayfaya geri yönlendir
             header("Location: firma_admin_sefer_duzenle.php?id=" . $trip_id);
             exit();
         }
     }
 
-    // SAYFAYI GÖRÜNTÜLEMEK İÇİN GEREKLİ VERİLERİ ÇEK
     $stmt = $db->prepare("SELECT * FROM Trips WHERE id = :id AND company_id = :cid");
     $stmt->execute([':id' => $trip_id, ':cid' => $company_id]);
     $trip = $stmt->fetch();
@@ -54,7 +50,6 @@
         unset($_SESSION['flash_message']);
     }
 
-    //--- BÖLÜM 2: GÖRSEL OLUŞTURMA (HTML BAŞLANGICI) ---
     require 'header.php';
 ?>
 
@@ -95,4 +90,5 @@
 
 <?php
     require 'footer.php';
+
 ?>
