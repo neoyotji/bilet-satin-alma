@@ -39,22 +39,18 @@
         return str_replace($search, $replace, $text);
     }
 
-    //--- PDF Oluşturma ---
     $pdf = new FPDF();
     $pdf->AddPage();
     $pdf->SetFont('Arial', 'B', 16);
 
-    // Başlık (Türkçe karakterler dönüştürülmüş)
     $pdf->Cell(0, 10, replace_tr_chars('Yolcu Bilet Bilgisi'), 0, 1, 'C');
     $pdf->Ln(10);
 
-    // Firma Adı
     $pdf->SetFont('Arial', 'B', 14);
     $pdf->Cell(0, 10, replace_tr_chars($ticket['company_name']), 0, 1, 'C');
     $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY()); 
     $pdf->Ln(10);
 
-    // Bilet Detayları
     $pdf->SetFont('Arial', '', 12);
     $pdf->Cell(40, 10, replace_tr_chars('Yolcu Adi:'));
     $pdf->Cell(0, 10, replace_tr_chars($ticket['passenger_name']));
@@ -81,7 +77,7 @@
     $pdf->SetFont('Arial', 'I', 10);
     $pdf->Cell(0, 10, replace_tr_chars('Iyi yolculuklar dileriz!'), 0, 1, 'C');
 
-    // PDF'i tarayıcıya gönder
     $pdf->Output('D', 'bilet_'. $ticket_id .'.pdf');
-    exit; // PDF gönderildikten sonra başka bir işlem yapılmaması için script'i sonlandır.
+    exit; 
+
 ?>
